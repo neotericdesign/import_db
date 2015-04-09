@@ -32,9 +32,9 @@ abort "ERROR: You must specify a Heroku project" if options[:project].nil?
 options[:database] ||= "#{options[:project]}_development"
 
 if options[:refresh]
-  `heroku pgbackups:capture --expire -a #{options[:project]}`
+  `heroku pg:backups capture -a #{options[:project]}`
 end
 
-`curl -o latest.dump \`heroku pgbackups:url -a #{options[:project]}\``
+`curl -o latest.dump \`heroku pg:backups public-url -a #{options[:project]}\``
 `pg_restore --verbose --clean --no-acl --no-owner -h localhost -d #{options[:database]} latest.dump`
 `rm latest.dump`
