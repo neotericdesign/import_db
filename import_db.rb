@@ -6,7 +6,7 @@
 
 require 'optparse'
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 options = {}
 OptionParser.new do |opts|
