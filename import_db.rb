@@ -26,7 +26,7 @@ OptionParser.new do |opts|
   end
 
   opts.on("-t", "--tables [TABLES]", "Specify tables, comma separated") do |t|
-    options[:tables] = t.split(',')
+    options[:tables] = t.split(',').map { |table| "--table=#{table}" }.join(' ')
   end
 end.parse!
 
@@ -39,10 +39,6 @@ options[:database] ||= "#{options[:project]}_development"
 
 if options[:refresh]
   `heroku pg:backups capture -a #{options[:project]}`
-end
-
-if options[:tables]
-  options[:tables] = options[:tables].map { |t| "--table=#{t}" }.join(' ')
 end
 
 `curl -o latest.dump \`heroku pg:backups public-url -a #{options[:project]}\``
