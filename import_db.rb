@@ -16,17 +16,18 @@ OptionParser.new do |opts|
     options[:database] = d
   end
 
-  opts.on("-r", "--refresh", "Refresh the backup with the latest data") do |r|
-    options[:refresh] = r
+  opts.on("-l", "--live", "Source from live database instead of latest backup") do |l|
+    options[:live] = l
+  end
+
+  opts.on("-t", "--tables [TABLES]", "Specify tables, comma separated") do |t|
+    options[:tables] = t.split(',').map { |table| "--table=#{table}" }.join(' ')
+    options[:live] = true
   end
 
   opts.on("-v", "--version", "Show version") do
     puts VERSION
     exit
-  end
-
-  opts.on("-t", "--tables [TABLES]", "Specify tables, comma separated") do |t|
-    options[:tables] = t.split(',').map { |table| "--table=#{table}" }.join(' ')
   end
 end.parse!
 
@@ -37,10 +38,10 @@ abort "ERROR: You must specify a Heroku project" if options[:project].nil?
 
 options[:database] ||= "#{options[:project]}_development"
 
-if options[:refresh] || options[:tables]
-  connection_string = `heroku pg:credentials DATABASE --app #{options[:project]}`[/Connection info string:.*\"(.*)\"/m, 1]
+if options[:refresh]
+  connection_info = `heroku pg:credentials DATABASE --app #{options[:project]}`[/Connection info string:.*\"(.*)\"/m, 1]
   puts "Dumping remote database..."
-  `pg_dump -Fc -f latest.dump "#{connection_string}" #{options[:tables]}`
+  `pg_dump -Fc -f latest.dump "#{connection_info}" #{options[:tables]}`
 else
   puts "Grabbing last backup..."
   `curl -o latest.dump \`heroku pg:backups public-url -a #{options[:project]}\``
