@@ -37,10 +37,14 @@ abort "ERROR: You must specify a Heroku project" if options[:project].nil?
 
 options[:database] ||= "#{options[:project]}_development"
 
-if options[:refresh]
-  `heroku pg:backups capture -a #{options[:project]}`
+if options[:refresh] || options[:tables]
+  connection_string = `heroku pg:credentials DATABASE --app #{options[:project]}`[/Connection info string:.*\"(.*)\"/m, 1]
+  puts "Dumping remote database..."
+  `pg_dump -Fc -f latest.dump "#{connection_string}" #{options[:tables]}`
+else
+  puts "Grabbing last backup..."
+  `curl -o latest.dump \`heroku pg:backups public-url -a #{options[:project]}\``
 end
 
-`curl -o latest.dump \`heroku pg:backups public-url -a #{options[:project]}\``
-`pg_restore --verbose #{options[:import_type]} --no-acl --no-owner -h localhost #{options[:tables]} -d #{options[:database]} latest.dump`
+`pg_restore --verbose #{options[:import_type]} --no-acl --no-owner -h localhost -d #{options[:database]} latest.dump`
 `rm latest.dump`
