@@ -20,7 +20,7 @@ Grant execute privilege
 
 (Optional, recommended) Symlink the script for easy access, e.g:
 
-`ln -s import_db/import_db.rb /usr/bin/local/import_db`
+`ln -s /full/path/to/import_db/import_db.rb /usr/bin/local/import_db`
 
 ## Usage
 
