@@ -4,6 +4,10 @@ from your pals at [Neoteric Design](http://www.neotericdesign.com)
 
 Current Version: 0.1.0
 
+## Requirements
+
+Just Ruby 😬
+
 ## Getting Started
 
 Clone repo
