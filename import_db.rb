@@ -65,12 +65,13 @@ end
 
 if options[:refresh]
   connection_info = `heroku pg:credentials DATABASE --app #{options[:project]}`[/Connection info string:.*\"(.*)\"/m, 1]
-  puts "Dumping remote database..."
+  puts "Dumping remote database for app '#{options[:project]}'..."
   `pg_dump -Fc -f latest.dump "#{connection_info}" #{options[:tables]}`
 else
-  puts "Grabbing last backup..."
+  puts "Grabbing last backup for app '#{options[:project]}'..."
   `curl -o latest.dump \`heroku pg:backups public-url -a #{options[:project]}\``
 end
 
-`pg_restore --verbose #{options[:import_type]} --no-acl --no-owner -h localhost -d #{options[:database]} latest.dump`
+puts "Importing to local database: '#{options[:database]}'"
+`pg_restore #{options[:import_type]} --no-acl --no-owner -h localhost -d #{options[:database]} latest.dump`
 `rm latest.dump`
