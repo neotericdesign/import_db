@@ -18,20 +18,26 @@ Grant execute privilege
 
 `chmod +x import_db/import_db.rb`
 
-(Optional, recommended) Symlink the script in your home for easy access
+(Optional, recommended) Symlink the script for easy access, e.g:
 
-`ln -s import_db/import_db.rb ~/import_db`
+`ln -s import_db/import_db.rb /usr/bin/local/import_db`
 
 ## Usage
 
-`~/import_db your-heroku-app-name [options]`
+`import_db [heroku-app-name] [options]`
 
 ### Options
+
+`heroku-app-name`
+- Specify the heroku app to pull from. Only supports the default postgres
+database you have set.
+- Default: the current directory name. If unset will prompt you before taking
+action.
 
 `-d, --database [DATABASE]`
 
 - Specifies local database to dump to
-- Default: `yourherokuappname_development`
+- Default: `herokuappname_development`
 
 `-l, --live`
 

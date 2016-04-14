@@ -7,6 +7,23 @@
 require 'optparse'
 
 VERSION = '0.1.0'
+WORKING_DIR = File.basename(Dir.getwd)
+
+def ask_yn(question, default = :y)
+  option_y = :y == default ? 'Y' : 'y'
+  option_n = :n == default ? 'N' : 'n'
+
+  puts "#{question} (#{option_y}/#{option_n})"
+  response = STDIN.gets.chomp
+
+  if response.nil?
+    response = default
+  else
+    response = response.downcase.chr.to_sym
+  end
+
+  response == :y
+end
 
 options = {}
 OptionParser.new do |opts|
@@ -31,12 +48,20 @@ OptionParser.new do |opts|
   end
 end.parse!
 
+
 options[:project] = ARGV[0]
+no_project_specified = options[:project].nil?
+options[:project] ||= WORKING_DIR
 options[:import_type] = '--clean'
-
-abort "ERROR: You must specify a Heroku project" if options[:project].nil?
-
 options[:database] ||= "#{options[:project]}_development"
+
+
+if no_project_specified
+  unless ask_yn("Import database of '#{options[:project]}' to local database '#{options[:database]}'?")
+    abort
+  end
+end
+
 
 if options[:refresh]
   connection_info = `heroku pg:credentials DATABASE --app #{options[:project]}`[/Connection info string:.*\"(.*)\"/m, 1]
