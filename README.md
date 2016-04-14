@@ -2,7 +2,7 @@
 Simple postgres database import script for Heroku projects
 from your pals at [Neoteric Design](http://www.neotericdesign.com)
 
-Current Version: 0.1.0
+Current Version: 0.1.1
 
 ## Requirements
 
@@ -51,6 +51,4 @@ fresh pg_dump
 
 ` -v, --version`
 
-- Returns script version 😬
-
-
+- Returns script version

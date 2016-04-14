@@ -6,7 +6,7 @@
 
 require 'optparse'
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 WORKING_DIR = File.basename(Dir.getwd)
 
 def ask_yn(question, default = :y)
